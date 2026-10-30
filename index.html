@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ejercicio de bases de datos: empresa de transporte de mercancías. Entidades débiles y especialización ISA.">
+    <meta name="color-scheme" content="light">
+    <title>Empresa de transporte · ER Lab</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+      @theme {
+        --font-sans: "Segoe UI", system-ui, sans-serif;
+      }
+      @layer base {
+        :focus-visible { @apply outline-2 outline-offset-4 outline-indigo-600; }
+      }
+      @layer components {
+        .content-panel { @apply mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white; }
+        .panel-summary { @apply cursor-pointer px-5 py-6 marker:text-indigo-600 sm:px-8; }
+        .panel-eyebrow { @apply text-xs font-bold uppercase tracking-widest text-indigo-600; }
+        .panel-title { @apply mt-2 block text-2xl font-bold tracking-tight text-slate-950; }
+        .panel-description { @apply mt-3 block text-sm leading-7 sm:text-base; }
+        .panel-toggle { @apply mt-3 flex items-center gap-2 text-sm font-semibold text-indigo-700; }
+        .diagram-figure { @apply overflow-x-auto px-5 py-8 sm:px-8; }
+        .diagram-caption { @apply mx-auto mt-6 rounded-xl bg-slate-50 px-4 py-4 text-sm leading-7 text-slate-700 sm:text-base; }
+        .schema-card { @apply overflow-hidden rounded-xl border border-slate-200; }
+        .schema-card-title { @apply bg-slate-100 px-4 py-3 font-mono text-sm font-bold text-slate-800; }
+        .schema-code { @apply overflow-x-auto bg-slate-950 p-4 text-sm leading-6 text-slate-100; }
+        .diagram-lines { @apply fill-none stroke-slate-800 stroke-3; }
+        .diagram-entity-primary { @apply fill-blue-100 stroke-blue-400 stroke-3; }
+        .diagram-entity-secondary { @apply fill-slate-200 stroke-slate-500 stroke-2; }
+        .diagram-entity-weak { @apply fill-slate-200 stroke-slate-500 stroke-3; }
+        .diagram-entity-weak-inner { @apply fill-none stroke-slate-500 stroke-2; }
+        .diagram-relationship { @apply fill-indigo-100 stroke-indigo-500 stroke-2; }
+        .diagram-relationship-isa { @apply fill-indigo-100 stroke-indigo-500 stroke-3; }
+        .diagram-badge { @apply fill-indigo-50; }
+        .diagram-text { @apply fill-slate-700 font-sans [text-anchor:middle]; }
+        .diagram-title { @apply fill-slate-800 font-sans font-semibold [text-anchor:middle]; }
+        .diagram-label { @apply fill-indigo-700 font-sans font-bold [text-anchor:middle]; }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-700 antialiased selection:bg-indigo-100 selection:text-indigo-950">
+  <a href="#enunciado" class="sr-only fixed left-4 top-4 z-50 rounded-xl bg-indigo-600 px-4 py-3 text-white focus:not-sr-only">Saltar al enunciado</a>
+
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-5 sm:px-8">
+        <a href="#" class="flex items-center gap-3 font-bold tracking-tight text-slate-950" aria-label="ER Lab, inicio">
+          <span class="grid size-10 place-items-center rounded-xl bg-indigo-600 text-sm text-white" aria-hidden="true">ER</span>
+          <span>ER Lab<span class="ml-2 hidden text-sm font-normal text-slate-500 sm:inline">/ Bases de datos</span></span>
+        </a>
+        <span class="rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700">Cuaderno de ejercicios</span>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-5 pb-12 pt-6 sm:px-8 sm:pb-16 sm:pt-8">
+      <section aria-labelledby="titulo" class="rounded-3xl bg-slate-950 px-6 py-8 text-white sm:p-10">
+        <p class="text-xs font-semibold uppercase tracking-widest text-indigo-300">Modelo entidad-relación</p>
+        <h1 id="titulo" class="mt-4 max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">Empresa de transporte de mercancías</h1>
+        <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">Lee el enunciado y prepara tu propuesta de diseño de la base de datos.</p>
+        <div class="mt-6 flex flex-wrap gap-2 text-xs font-medium">
+          <span class="rounded-full border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200">Entidades débiles</span>
+          <span class="rounded-full border border-slate-700 bg-slate-900 px-3 py-2 text-slate-200">Especialización ISA</span>
+        </div>
+      </section>
+
+      <section id="enunciado" aria-labelledby="enunciado-titulo" class="content-panel">
+        <div class="border-b border-slate-200 px-5 py-6 sm:px-8">
+          <p class="panel-eyebrow">El escenario</p>
+          <h2 id="enunciado-titulo" class="panel-title">Enunciado</h2>
+          <p class="mt-3 text-sm leading-7 sm:text-base">Se desea diseñar la base de datos de una empresa de transporte con los siguientes requisitos:</p>
+        </div>
+
+        <ol class="list-decimal space-y-6 py-6 pl-11 pr-5 text-sm leading-7 marker:font-bold marker:text-indigo-600 sm:space-y-7 sm:py-8 sm:pl-14 sm:pr-8 sm:text-base">
+          <li class="pl-2">
+            Se almacenan los datos de los <strong class="font-semibold text-slate-950">vehículos</strong> (matrícula, marca, modelo, año). Los vehículos se dividen en dos tipos: <strong class="font-semibold text-slate-950">camión</strong> (tonelaje máximo) y <strong class="font-semibold text-slate-950">furgoneta</strong> (capacidad en m³). Todo vehículo es exactamente uno de estos dos tipos, y no puede ser ambos.
+          </li>
+          <li class="pl-2">
+            Se registran los <strong class="font-semibold text-slate-950">empleados</strong> (DNI, nombre, apellidos, teléfono). Los empleados se clasifican en: <strong class="font-semibold text-slate-950">conductor</strong> (número de carnet, categoría) y <strong class="font-semibold text-slate-950">administrativo</strong> (departamento). Un empleado es exactamente uno de estos dos tipos.
+          </li>
+          <li class="pl-2">
+            Se gestionan los <strong class="font-semibold text-slate-950">viajes</strong> (nº de viaje, fecha de salida, origen, destino). Un viaje lo realiza un conductor y se efectúa con un vehículo. Un conductor puede realizar varios viajes, y un vehículo puede realizar varios viajes.
+          </li>
+          <li class="pl-2">
+            Cada viaje se divide en <strong class="font-semibold text-slate-950">tramos</strong>. Cada tramo tiene un número de orden (1, 2, 3…), distancia en km, fecha de inicio y fecha de fin. El número de tramo se repite entre distintos viajes (el "tramo 1" del viaje 10 no es el mismo que el "tramo 1" del viaje 11). Si se elimina un viaje, sus tramos desaparecen.
+          </li>
+          <li class="pl-2">
+            Un administrativo puede gestionar varios viajes, y un viaje puede ser gestionado por varios administrativos.
+          </li>
+        </ol>
+      </section>
+
+      <section aria-labelledby="paso-1-titulo" class="content-panel">
+        <details class="group">
+          <summary class="panel-summary">
+            <span class="panel-eyebrow">Diseño del modelo</span>
+            <span id="paso-1-titulo" class="panel-title">Paso 1. Identificar las entidades del enunciado</span>
+            <span class="panel-description">Estas son las entidades que aparecen en el ejercicio:</span>
+            <span class="panel-toggle">
+              <span class="group-open:hidden">Ver lista</span>
+              <span class="hidden group-open:inline">Ocultar lista</span>
+              <svg aria-hidden="true" class="size-4 fill-none stroke-current stroke-2 transition-transform group-open:rotate-180" viewBox="0 0 20 20"><path class="stroke-current" d="m5 7.5 5 5 5-5"/></svg>
+            </span>
+          </summary>
+          <div class="border-t border-slate-200">
+        <div class="overflow-x-auto px-5 py-6 sm:px-8">
+          <table class="w-full min-w-[32rem] border-collapse text-left text-sm sm:text-base">
+            <caption class="sr-only">Entidades identificadas y qué representa cada una</caption>
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-950">
+                <th scope="col" class="px-4 py-3 font-semibold">Entidad</th>
+                <th scope="col" class="px-4 py-3 font-semibold">Qué representa</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>vehiculos</code></th>
+                <td class="px-4 py-3">Todos los vehículos de la empresa</td>
+              </tr>
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>camiones</code></th>
+                <td class="px-4 py-3">Un tipo de vehículo</td>
+              </tr>
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>furgonetas</code></th>
+                <td class="px-4 py-3">Otro tipo de vehículo</td>
+              </tr>
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>empleados</code></th>
+                <td class="px-4 py-3">Los trabajadores</td>
+              </tr>
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>conductores</code></th>
+                <td class="px-4 py-3">Un tipo de empleado</td>
+              </tr>
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>administrativos</code></th>
+                <td class="px-4 py-3">Otro tipo de empleado</td>
+              </tr>
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>viajes</code></th>
+                <td class="px-4 py-3">Los transportes realizados</td>
+              </tr>
+              <tr>
+                <th scope="row" class="px-4 py-3 font-mono text-sm font-semibold text-indigo-700"><code>tramos</code></th>
+                <td class="px-4 py-3">Las partes de cada viaje</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="border-t border-slate-200 bg-indigo-50/60 px-5 py-5 text-sm leading-7 text-slate-700 sm:px-8 sm:text-base">
+          Además, hay una relación <strong class="font-semibold text-slate-950">N:M</strong> entre administrativos y viajes, que resolveremos al transformar el diagrama al modelo relacional.
+        </p>
+          </div>
+        </details>
+      </section>
+
+      <section aria-labelledby="paso-2-titulo" class="content-panel">
+        <details class="group">
+          <summary class="panel-summary">
+            <span class="panel-eyebrow">Especialización</span>
+            <span id="paso-2-titulo" class="panel-title">Paso 2. Dibujamos nuestra primera relación ISA</span>
+            <span class="panel-description">El enunciado dice que todos los vehículos son camiones o furgonetas, pero nunca ambas cosas.</span>
+            <span class="panel-toggle">
+              <span class="group-open:hidden">Ver diagrama</span>
+              <span class="hidden group-open:inline">Ocultar diagrama</span>
+              <svg aria-hidden="true" class="size-4 fill-none stroke-current stroke-2 transition-transform group-open:rotate-180" viewBox="0 0 20 20"><path class="stroke-current" d="m5 7.5 5 5 5-5"/></svg>
+            </span>
+          </summary>
+          <div class="border-t border-slate-200">
+        <figure class="diagram-figure">
+          <svg viewBox="0 0 800 540" role="img" aria-labelledby="isa-vehiculos-titulo isa-vehiculos-descripcion" class="mx-auto h-auto min-w-[40rem] w-full max-w-3xl sm:min-w-0">
+            <title id="isa-vehiculos-titulo">Especialización ISA de vehículos</title>
+            <desc id="isa-vehiculos-descripcion">Vehículos tiene los atributos matricula, clave primaria, marca, modelo y anio. Mediante el triángulo ISA se especializa en camiones, con tonelaje_maximo, y furgonetas, con capacidad_m3. La especialización es total y disjunta.</desc>
+            <g class="diagram-lines">
+              <path d="M400 145V190M400 280V320M200 320H600M200 320V350M600 320V350"/>
+            </g>
+            <rect x="220" y="15" width="360" height="130" rx="10" class="diagram-entity-primary"/>
+            <text x="400" y="55" class="diagram-title text-[26px]">vehiculos</text>
+            <text x="400" y="90" class="diagram-text text-lg">matricula (PK) · marca</text>
+            <text x="400" y="118" class="diagram-text text-lg">modelo · anio</text>
+            <path d="M400 190L330 280H470Z" class="diagram-relationship-isa"/>
+            <text x="400" y="251" class="diagram-text text-2xl">ISA</text>
+            <rect x="25" y="350" width="350" height="120" rx="8" class="diagram-entity-secondary"/>
+            <text x="200" y="395" class="diagram-title text-2xl">camiones</text>
+            <text x="200" y="432" class="diagram-text text-lg">tonelaje_maximo</text>
+            <rect x="425" y="350" width="350" height="120" rx="8" class="diagram-entity-secondary"/>
+            <text x="600" y="395" class="diagram-title text-2xl">furgonetas</text>
+            <text x="600" y="432" class="diagram-text text-lg">capacidad_m3</text>
+            <rect x="280" y="490" width="105" height="32" rx="16" class="diagram-badge"/>
+            <text x="332" y="512" class="diagram-label text-sm">TOTAL</text>
+            <rect x="400" y="490" width="120" height="32" rx="16" class="diagram-badge"/>
+            <text x="460" y="512" class="diagram-label text-sm">DISJUNTA</text>
+          </svg>
+          <figcaption class="diagram-caption max-w-xl">
+            La especialización es <strong class="font-semibold text-slate-950">total</strong>: todo vehículo es un camión o una furgoneta. Además, es <strong class="font-semibold text-slate-950">disjunta</strong>: no puede ser ambos a la vez.
+          </figcaption>
+        </figure>
+          </div>
+        </details>
+      </section>
+
+      <section aria-labelledby="paso-3-titulo" class="content-panel">
+        <details class="group">
+          <summary class="panel-summary">
+            <span class="panel-eyebrow">Especialización</span>
+            <span id="paso-3-titulo" class="panel-title">Paso 3. Segunda relación ISA: empleados</span>
+            <span class="panel-description">Los empleados se dividen en conductores y administrativos. Todos comparten DNI, nombre, apellidos y teléfono, pero cada tipo tiene atributos específicos.</span>
+            <span class="panel-toggle">
+              <span class="group-open:hidden">Ver diagrama</span>
+              <span class="hidden group-open:inline">Ocultar diagrama</span>
+              <svg aria-hidden="true" class="size-4 fill-none stroke-current stroke-2 transition-transform group-open:rotate-180" viewBox="0 0 20 20"><path class="stroke-current" d="m5 7.5 5 5 5-5"/></svg>
+            </span>
+          </summary>
+          <div class="border-t border-slate-200">
+        <figure class="diagram-figure">
+          <svg viewBox="0 0 800 520" role="img" aria-labelledby="isa-empleados-titulo isa-empleados-descripcion" class="mx-auto h-auto min-w-[40rem] w-full max-w-3xl sm:min-w-0">
+            <title id="isa-empleados-titulo">Especialización ISA de empleados</title>
+            <desc id="isa-empleados-descripcion">Empleados tiene los atributos dni, clave primaria, nombre, apellidos y teléfono. Mediante el triángulo ISA se especializa en conductores, con numero_carnet y categoria, y administrativos, con departamento. La especialización es total y disjunta.</desc>
+            <g class="diagram-lines">
+              <path d="M400 145V175M400 265V295M200 295H600M200 295V325M600 295V325"/>
+            </g>
+            <rect x="220" y="15" width="360" height="130" rx="10" class="diagram-entity-primary"/>
+            <text x="400" y="52" class="diagram-title text-[26px]">empleados</text>
+            <text x="400" y="87" class="diagram-text text-lg">dni (PK) · nombre</text>
+            <text x="400" y="116" class="diagram-text text-lg">apellidos · telefono</text>
+            <path d="M400 175L330 265H470Z" class="diagram-relationship-isa"/>
+            <text x="400" y="236" class="diagram-text text-2xl">ISA</text>
+            <rect x="25" y="325" width="350" height="120" rx="8" class="diagram-entity-secondary"/>
+            <text x="200" y="370" class="diagram-title text-2xl">conductores</text>
+            <text x="200" y="407" class="diagram-text text-lg">numero_carnet · categoria</text>
+            <rect x="425" y="325" width="350" height="120" rx="8" class="diagram-entity-secondary"/>
+            <text x="600" y="370" class="diagram-title text-2xl">administrativos</text>
+            <text x="600" y="407" class="diagram-text text-lg">departamento</text>
+            <rect x="280" y="465" width="105" height="32" rx="16" class="diagram-badge"/>
+            <text x="332" y="487" class="diagram-label text-sm">TOTAL</text>
+            <rect x="400" y="465" width="120" height="32" rx="16" class="diagram-badge"/>
+            <text x="460" y="487" class="diagram-label text-sm">DISJUNTA</text>
+          </svg>
+          <figcaption class="diagram-caption max-w-xl">
+            La especialización es <strong class="font-semibold text-slate-950">total</strong>: todos los empleados son conductores o administrativos. También es <strong class="font-semibold text-slate-950">disjunta</strong>: ningún empleado pertenece a ambos tipos a la vez.
+          </figcaption>
+        </figure>
+          </div>
+        </details>
+      </section>
+
+      <section aria-labelledby="paso-4-titulo" class="content-panel">
+        <details class="group">
+          <summary class="panel-summary">
+            <span class="panel-eyebrow">Relaciones</span>
+            <span id="paso-4-titulo" class="panel-title">Paso 4. Relaciones de los viajes</span>
+            <span class="panel-description">Cada viaje lo realiza un conductor y se efectúa con un vehículo. Un conductor y un vehículo pueden participar en varios viajes.</span>
+            <span class="panel-toggle">
+              <span class="group-open:hidden">Ver diagrama</span>
+              <span class="hidden group-open:inline">Ocultar diagrama</span>
+              <svg aria-hidden="true" class="size-4 fill-none stroke-current stroke-2 transition-transform group-open:rotate-180" viewBox="0 0 20 20"><path class="stroke-current" d="m5 7.5 5 5 5-5"/></svg>
+            </span>
+          </summary>
+          <div class="border-t border-slate-200">
+            <figure class="diagram-figure">
+              <svg viewBox="0 0 900 390" role="img" aria-labelledby="viajes-relaciones-titulo viajes-relaciones-descripcion" class="mx-auto h-auto min-w-[48rem] w-full max-w-4xl sm:min-w-0">
+                <title id="viajes-relaciones-titulo">Relaciones de viajes con conductores y vehículos</title>
+                <desc id="viajes-relaciones-descripcion">Un conductor realiza muchos viajes y cada viaje lo realiza un conductor. Un vehículo se utiliza en muchos viajes y cada viaje se efectúa con un vehículo.</desc>
+                <g class="diagram-lines">
+                  <path d="M175 195H215M305 195H360M540 195H595M685 195H725"/>
+                </g>
+                <rect x="15" y="130" width="160" height="130" rx="9" class="diagram-entity-secondary"/>
+                <text x="95" y="170" class="diagram-title text-[21px]">conductores</text>
+                <text x="95" y="205" class="diagram-text text-[15px]">numero_carnet</text>
+                <text x="95" y="230" class="diagram-text text-[15px]">categoria</text>
+                <path d="M260 145L305 195L260 245L215 195Z" class="diagram-relationship"/>
+                <text x="260" y="200" class="diagram-text text-[15px]">realiza</text>
+                <text x="190" y="184" class="diagram-label text-[15px]">1</text>
+                <text x="333" y="184" class="diagram-label text-[15px]">N</text>
+                <rect x="360" y="115" width="180" height="160" rx="10" class="diagram-entity-primary"/>
+                <text x="450" y="155" class="diagram-title text-[23px]">viajes</text>
+                <text x="450" y="193" class="diagram-text text-[15px]">num_viaje (PK)</text>
+                <text x="450" y="218" class="diagram-text text-[15px]">fecha_salida</text>
+                <text x="450" y="243" class="diagram-text text-[15px]">origen · destino</text>
+                <path d="M640 145L685 195L640 245L595 195Z" class="diagram-relationship"/>
+                <text x="640" y="200" class="diagram-text text-[15px]">utiliza</text>
+                <text x="568" y="184" class="diagram-label text-[15px]">N</text>
+                <text x="710" y="184" class="diagram-label text-[15px]">1</text>
+                <rect x="725" y="130" width="160" height="130" rx="9" class="diagram-entity-secondary"/>
+                <text x="805" y="180" class="diagram-title text-[21px]">vehiculos</text>
+                <text x="805" y="215" class="diagram-text text-[15px]">matricula · marca</text>
+                <text x="450" y="335" class="diagram-label text-[15px]">1:N · Un conductor puede realizar varios viajes</text>
+                <text x="450" y="360" class="diagram-label text-[15px]">N:1 · Muchos viajes pueden efectuarse con un vehículo</text>
+              </svg>
+              <figcaption class="diagram-caption max-w-2xl">
+                Cada viaje corresponde a un único conductor y a un único vehículo. Tanto un conductor como un vehículo pueden estar asociados a varios viajes.
+              </figcaption>
+            </figure>
+          </div>
+        </details>
+      </section>
+
+      <section aria-labelledby="paso-5-titulo" class="content-panel">
+        <details class="group">
+          <summary class="panel-summary">
+            <span class="panel-eyebrow">Entidad débil</span>
+            <span id="paso-5-titulo" class="panel-title">Paso 5. Entidad débil: tramos</span>
+            <span class="panel-description">Cada viaje se divide en varios tramos numerados consecutivamente. Cada tramo pertenece a un único viaje.</span>
+            <span class="panel-toggle">
+              <span class="group-open:hidden">Ver diagrama</span>
+              <span class="hidden group-open:inline">Ocultar diagrama</span>
+              <svg aria-hidden="true" class="size-4 fill-none stroke-current stroke-2 transition-transform group-open:rotate-180" viewBox="0 0 20 20"><path class="stroke-current" d="m5 7.5 5 5 5-5"/></svg>
+            </span>
+          </summary>
+          <div class="border-t border-slate-200">
+            <figure class="diagram-figure">
+              <svg viewBox="0 0 900 390" role="img" aria-labelledby="tramos-debiles-titulo tramos-debiles-descripcion" class="mx-auto h-auto min-w-[48rem] w-full max-w-4xl sm:min-w-0">
+                <title id="tramos-debiles-titulo">Entidad débil tramos identificada por viajes</title>
+                <desc id="tramos-debiles-descripcion">La entidad fuerte viajes, identificada por num_viaje, se relaciona con la entidad débil tramos mediante la relación identificadora se divide en. Un viaje puede tener varios tramos y cada tramo pertenece a un viaje. numero_orden es el discriminador de tramos.</desc>
+                <g class="diagram-lines">
+                  <path d="M325 195H375M525 195H575"/>
+                  <path d="M525 187H575M525 203H575"/>
+                </g>
+                <rect x="70" y="130" width="255" height="130" rx="10" class="diagram-entity-primary"/>
+                <text x="197" y="170" class="diagram-title text-2xl">viajes</text>
+                <text x="197" y="205" class="diagram-text text-lg">num_viaje (PK)</text>
+                <text x="197" y="232" class="diagram-text text-base">entidad fuerte</text>
+                <path d="M450 130L525 195L450 260L375 195Z" class="diagram-relationship-isa"/>
+                <path d="M450 140L513 195L450 250L387 195Z" class="diagram-entity-weak-inner"/>
+                <text x="450" y="191" class="diagram-text text-base">se divide</text>
+                <text x="450" y="213" class="diagram-text text-base">en</text>
+                <rect x="575" y="110" width="255" height="170" rx="10" class="diagram-entity-weak"/>
+                <rect x="583" y="118" width="239" height="154" rx="6" class="diagram-entity-weak-inner"/>
+                <text x="702" y="151" class="diagram-title text-2xl">tramos</text>
+                <text x="702" y="184" class="diagram-text text-base">numero_orden (discriminador)</text>
+                <text x="702" y="211" class="diagram-text text-base">distancia_km</text>
+                <text x="702" y="238" class="diagram-text text-base">fecha_inicio · fecha_fin</text>
+                <text x="350" y="181" class="diagram-label text-base">1</text>
+                <text x="550" y="181" class="diagram-label text-base">N</text>
+                <text x="450" y="325" class="diagram-label text-base">Relación identificadora · participación total de tramos</text>
+                <text x="450" y="352" class="diagram-label text-[15px]">numero_orden solo distingue tramos dentro de cada viaje</text>
+              </svg>
+              <figcaption class="diagram-caption max-w-2xl">
+                <p><strong class="font-semibold text-slate-950">Entidad fuerte:</strong> <code>viajes</code>, identificada mediante <code>num_viaje</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Entidad débil:</strong> <code>tramos</code>, con los atributos <code>numero_orden</code>, <code>distancia_km</code>, <code>fecha_inicio</code> y <code>fecha_fin</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Cardinalidad:</strong> 1:N. Un viaje puede tener varios tramos, pero cada tramo pertenece a un solo viaje.</p>
+                <p class="mt-2 rounded-lg border-l-4 border-indigo-500 bg-indigo-50 px-4 py-3"><strong class="font-semibold text-slate-950">Nota sobre la doble línea:</strong> la línea doble entre la relación identificadora y <code>tramos</code> indica participación total: todo tramo debe estar relacionado con un viaje. No indica la cardinalidad N, que se muestra por separado.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Dependencia por identificación:</strong> <code>numero_orden</code> es el discriminador de la entidad débil, pero no identifica un tramo de forma única porque se puede repetir en distintos viajes. Al transformar el diseño al modelo relacional, la clave primaria será la combinación <code>(num_viaje, numero_orden)</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Dependencia por existencia:</strong> si se elimina un viaje, también deben desaparecer sus tramos.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Conclusión:</strong> <code>tramos</code> es una entidad débil por identificación y existencia.</p>
+              </figcaption>
+            </figure>
+          </div>
+        </details>
+      </section>
+
+      <section aria-labelledby="paso-6-titulo" class="content-panel">
+        <details class="group">
+          <summary class="panel-summary">
+            <span class="panel-eyebrow">Relaciones</span>
+            <span id="paso-6-titulo" class="panel-title">Paso 6. Relación N:M: administrativos y viajes</span>
+            <span class="panel-description">Un administrativo puede gestionar varios viajes y un viaje puede ser gestionado por varios administrativos.</span>
+            <span class="panel-toggle">
+              <span class="group-open:hidden">Ver diagrama</span>
+              <span class="hidden group-open:inline">Ocultar diagrama</span>
+              <svg aria-hidden="true" class="size-4 fill-none stroke-current stroke-2 transition-transform group-open:rotate-180" viewBox="0 0 20 20"><path class="stroke-current" d="m5 7.5 5 5 5-5"/></svg>
+            </span>
+          </summary>
+          <div class="border-t border-slate-200">
+            <figure class="diagram-figure">
+              <svg viewBox="0 0 900 330" role="img" aria-labelledby="administrativos-viajes-titulo administrativos-viajes-descripcion" class="mx-auto h-auto min-w-[48rem] w-full max-w-4xl sm:min-w-0">
+                <title id="administrativos-viajes-titulo">Relación N:M entre administrativos y viajes</title>
+                <desc id="administrativos-viajes-descripcion">La entidad administrativos se relaciona con la entidad viajes mediante el rombo simple gestiona. La cardinalidad es N en ambos extremos.</desc>
+                <g class="diagram-lines">
+                  <path d="M300 155H375M525 155H600"/>
+                </g>
+                <rect x="70" y="95" width="230" height="120" rx="9" class="diagram-entity-secondary"/>
+                <text x="185" y="145" class="diagram-title text-2xl">administrativos</text>
+                <path d="M450 100L525 155L450 210L375 155Z" class="diagram-relationship"/>
+                <text x="450" y="160" class="diagram-text text-lg">gestiona</text>
+                <rect x="600" y="95" width="230" height="120" rx="9" class="diagram-entity-primary"/>
+                <text x="715" y="145" class="diagram-title text-2xl">viajes</text>
+                <text x="338" y="144" class="diagram-label text-[17px]">N</text>
+                <text x="562" y="144" class="diagram-label text-[17px]">N</text>
+                <text x="450" y="275" class="diagram-label text-base">N:M · Muchos a muchos</text>
+              </svg>
+              <figcaption class="diagram-caption max-w-2xl">
+                <p><strong class="font-semibold text-slate-950">Entidades:</strong> <code>administrativos</code> y <code>viajes</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Relación:</strong> <code>gestiona</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Cardinalidad:</strong> N:M (muchos a muchos).</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Justificación:</strong> un administrativo puede gestionar varios viajes y un viaje puede tener varios administrativos.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Transformación posterior:</strong> al pasar al modelo relacional, crearemos la tabla intermedia <code>administrativos_viajes</code> para representar esta relación.</p>
+              </figcaption>
+            </figure>
+          </div>
+        </details>
+      </section>
+
+      <section aria-labelledby="paso-7-titulo" class="content-panel">
+        <details class="group">
+          <summary class="panel-summary">
+            <span class="panel-eyebrow">Transformación al modelo relacional</span>
+            <span id="paso-7-titulo" class="panel-title">Paso 7. Modelo relacional</span>
+            <span class="panel-description">Convertimos las entidades, las especializaciones y las relaciones del diseño E/R en tablas con sus claves.</span>
+            <span class="panel-toggle">
+              <span class="group-open:hidden">Ver tablas y reglas</span>
+              <span class="hidden group-open:inline">Ocultar tablas y reglas</span>
+              <svg aria-hidden="true" class="size-4 fill-none stroke-current stroke-2 transition-transform group-open:rotate-180" viewBox="0 0 20 20"><path class="stroke-current" d="m5 7.5 5 5 5-5"/></svg>
+            </span>
+          </summary>
+          <div class="border-t border-slate-200">
+            <div class="px-5 py-6 sm:px-8">
+              <p class="mb-4 text-sm leading-7 text-slate-600 sm:text-base">Cada tarjeta representa una tabla. <strong class="font-semibold text-slate-950">PK</strong> indica una clave primaria, <strong class="font-semibold text-slate-950">PK, FK</strong> una clave que también referencia otra tabla y <strong class="font-semibold text-slate-950">PK+</strong> los atributos que forman una clave primaria compuesta. Las referencias se muestran debajo de cada esquema.</p>
+              <div class="grid gap-4 md:grid-cols-2">
+                <article class="schema-card">
+                  <h3 class="schema-card-title">1. VEHICULOS</h3>
+                  <pre class="schema-code"><code>VEHICULOS (
+  matricula PK,
+  marca,
+  modelo,
+  anio
+)</code></pre>
+                </article>
+                <article class="schema-card">
+                  <h3 class="schema-card-title">2. CAMIONES</h3>
+                  <pre class="schema-code"><code>CAMIONES (
+  matricula PK, FK,
+  tonelaje_maximo
+)
+
+donde
+  {matricula} referencia VEHICULOS</code></pre>
+                </article>
+                <article class="schema-card">
+                  <h3 class="schema-card-title">3. FURGONETAS</h3>
+                  <pre class="schema-code"><code>FURGONETAS (
+  matricula PK, FK,
+  capacidad_m3
+)
+
+donde
+  {matricula} referencia VEHICULOS</code></pre>
+                </article>
+                <article class="schema-card">
+                  <h3 class="schema-card-title">4. EMPLEADOS</h3>
+                  <pre class="schema-code"><code>EMPLEADOS (
+  dni PK,
+  nombre,
+  apellidos,
+  telefono
+)</code></pre>
+                </article>
+                <article class="schema-card">
+                  <h3 class="schema-card-title">5. CONDUCTORES</h3>
+                  <pre class="schema-code"><code>CONDUCTORES (
+  dni PK, FK,
+  numero_carnet,
+  categoria
+)
+
+donde
+  {dni} referencia EMPLEADOS</code></pre>
+                </article>
+                <article class="schema-card">
+                  <h3 class="schema-card-title">6. ADMINISTRATIVOS</h3>
+                  <pre class="schema-code"><code>ADMINISTRATIVOS (
+  dni PK, FK,
+  departamento
+)
+
+donde
+  {dni} referencia EMPLEADOS</code></pre>
+                </article>
+                <article class="schema-card">
+                  <h3 class="schema-card-title">7. VIAJES</h3>
+                  <pre class="schema-code"><code>VIAJES (
+  num_viaje PK,
+  fecha_salida,
+  origen,
+  destino,
+  dni_conductor FK, NOT NULL,
+  matricula_vehiculo FK, NOT NULL
+)
+
+donde
+  {dni_conductor} referencia CONDUCTORES
+  {matricula_vehiculo} referencia VEHICULOS</code></pre>
+                </article>
+                <article class="schema-card">
+                  <h3 class="schema-card-title">8. TRAMOS</h3>
+                  <pre class="schema-code"><code>TRAMOS (
+  num_viaje PK+, FK,
+  numero_orden PK+,
+  distancia_km,
+  fecha_inicio,
+  fecha_fin
+)
+
+donde
+  {num_viaje} referencia VIAJES
+  ON DELETE CASCADE</code></pre>
+                </article>
+                <article class="schema-card md:col-span-2">
+                  <h3 class="schema-card-title">9. ADMINISTRATIVOS_VIAJES</h3>
+                  <pre class="schema-code"><code>ADMINISTRATIVOS_VIAJES (
+  dni_administrativo PK+, FK,
+  num_viaje PK+, FK
+)
+
+donde
+  {dni_administrativo} referencia ADMINISTRATIVOS
+  {num_viaje} referencia VIAJES</code></pre>
+                </article>
+              </div>
+            </div>
+            <div class="border-t border-slate-200 bg-indigo-50/60 px-5 py-5 text-sm leading-7 text-slate-700 sm:px-8 sm:text-base">
+              <h3 class="font-semibold text-slate-950">Cómo se representan las relaciones</h3>
+              <ul class="mt-3 list-disc space-y-2 pl-6">
+                <li><strong class="font-semibold text-slate-950">Especializaciones ISA:</strong> se crea una tabla para cada entidad general (<code>vehiculos</code> y <code>empleados</code>) y otra para cada subtipo. La clave primaria del subtipo también es clave foránea a la tabla general.</li>
+                <li><strong class="font-semibold text-slate-950">Totalidad y disyunción:</strong> las reglas del enunciado exigen que cada vehículo sea exactamente un camión o una furgoneta, y que cada empleado sea exactamente un conductor o un administrativo. Deben respetarse como restricciones de integridad; las claves PK/FK por sí solas no garantizan que todo registro general tenga exactamente un subtipo.</li>
+                <li><strong class="font-semibold text-slate-950">Viajes y conductores/vehículos (1:N):</strong> cada viaje guarda una clave foránea al conductor y al vehículo que le corresponden. Así, un conductor o vehículo puede estar asociado a varios viajes.</li>
+                <li><strong class="font-semibold text-slate-950">Entidad débil <code>tramos</code>:</strong> su PK combina la clave del viaje con el discriminador <code>numero_orden</code>. La FK con borrado en cascada refleja que los tramos no existen sin su viaje.</li>
+                <li><strong class="font-semibold text-slate-950">Relación N:M <code>gestiona</code>:</strong> se representa con <code>administrativos_viajes</code>. Cada fila vincula un administrativo con un viaje y la PK compuesta evita repetir la misma asociación.</li>
+              </ul>
+            </div>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-200 px-5 py-6 text-center text-xs text-slate-500">
+      ER Lab · Cuaderno de bases de datos
+    </footer>
+  </body>
+</html>
