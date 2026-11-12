@@ -76,7 +76,7 @@
             Se almacenan los datos de los <strong class="font-semibold text-slate-950">vehículos</strong> (matrícula, marca, modelo, año). Los vehículos se dividen en dos tipos: <strong class="font-semibold text-slate-950">camión</strong> (tonelaje máximo) y <strong class="font-semibold text-slate-950">furgoneta</strong> (capacidad en m³). Todo vehículo es exactamente uno de estos dos tipos, y no puede ser ambos.
           </li>
           <li class="pl-2">
-            Se registran los <strong class="font-semibold text-slate-950">empleados</strong> (DNI, nombre, apellidos, teléfono). Los empleados se clasifican en: <strong class="font-semibold text-slate-950">conductor</strong> (número de carnet, categoría) y <strong class="font-semibold text-slate-950">administrativo</strong> (departamento). Un empleado es exactamente uno de estos dos tipos.
+            Se registran los <strong class="font-semibold text-slate-950">empleados</strong> (DNI, nombre, apellido1, apellido2, teléfono). Los empleados se clasifican en: <strong class="font-semibold text-slate-950">conductor</strong> (número de carnet, categoría) y <strong class="font-semibold text-slate-950">administrativo</strong> (departamento). Un empleado es exactamente uno de estos dos tipos.
           </li>
           <li class="pl-2">
             Se gestionan los <strong class="font-semibold text-slate-950">viajes</strong> (nº de viaje, fecha de salida, origen, destino). Un viaje lo realiza un conductor y se efectúa con un vehículo. Un conductor puede realizar varios viajes, y un vehículo puede realizar varios viajes.
@@ -90,6 +90,13 @@
         </ol>
       </section>
 
+      <div class="mt-8 flex justify-end">
+        <button type="button" id="abrir-ambas-propuestas" aria-controls="solucion-original solucion-revisada" class="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white hover:bg-indigo-700">Abrir ambas propuestas</button>
+      </div>
+      <div id="comparacion-propuestas" class="grid grid-cols-1 items-start gap-6">
+        <details id="solucion-original" class="content-panel min-w-0 self-start" open>
+          <summary class="panel-summary"><span class="panel-eyebrow">Ejercicio 5 · Punto de partida</span><span class="panel-title">Mi propuesta original</span><span class="panel-description">Contenido, diagramas y explicaciones originales, conservados para consultar y comparar.</span><span class="panel-toggle">Abrir / cerrar solución original</span></summary>
+          <div class="border-t border-slate-200">
       <section aria-labelledby="paso-1-titulo" class="content-panel">
         <details class="group">
           <summary class="panel-summary">
@@ -206,7 +213,7 @@
           <summary class="panel-summary">
             <span class="panel-eyebrow">Especialización</span>
             <span id="paso-3-titulo" class="panel-title">Paso 3. Segunda relación ISA: empleados</span>
-            <span class="panel-description">Los empleados se dividen en conductores y administrativos. Todos comparten DNI, nombre, apellidos y teléfono, pero cada tipo tiene atributos específicos.</span>
+            <span class="panel-description">Los empleados se dividen en conductores y administrativos. Todos comparten DNI, nombre, apellido1, apellido2 y teléfono, pero cada tipo tiene atributos específicos.</span>
             <span class="panel-toggle">
               <span class="group-open:hidden">Ver diagrama</span>
               <span class="hidden group-open:inline">Ocultar diagrama</span>
@@ -217,14 +224,14 @@
         <figure class="diagram-figure">
           <svg viewBox="0 0 800 520" role="img" aria-labelledby="isa-empleados-titulo isa-empleados-descripcion" class="mx-auto h-auto min-w-[40rem] w-full max-w-3xl sm:min-w-0">
             <title id="isa-empleados-titulo">Especialización ISA de empleados</title>
-            <desc id="isa-empleados-descripcion">Empleados tiene los atributos dni, clave primaria, nombre, apellidos y teléfono. Mediante el triángulo ISA se especializa en conductores, con numero_carnet y categoria, y administrativos, con departamento. La especialización es total y disjunta.</desc>
+            <desc id="isa-empleados-descripcion">Empleados tiene los atributos dni, clave primaria, nombre, apellido1, apellido2 y teléfono. Mediante el triángulo ISA se especializa en conductores, con numero_carnet y categoria, y administrativos, con departamento. La especialización es total y disjunta.</desc>
             <g class="diagram-lines">
               <path d="M400 145V175M400 265V295M200 295H600M200 295V325M600 295V325"/>
             </g>
             <rect x="220" y="15" width="360" height="130" rx="10" class="diagram-entity-primary"/>
             <text x="400" y="52" class="diagram-title text-[26px]">empleados</text>
             <text x="400" y="87" class="diagram-text text-lg">dni (PK) · nombre</text>
-            <text x="400" y="116" class="diagram-text text-lg">apellidos · telefono</text>
+            <text x="400" y="116" class="diagram-text text-base">apellido1 · apellido2 · telefono</text>
             <path d="M400 175L330 265H470Z" class="diagram-relationship-isa"/>
             <text x="400" y="236" class="diagram-text text-2xl">ISA</text>
             <rect x="25" y="325" width="350" height="120" rx="8" class="diagram-entity-secondary"/>
@@ -443,7 +450,8 @@ donde
                   <pre class="schema-code"><code>EMPLEADOS (
   dni PK,
   nombre,
-  apellidos,
+  apellido1,
+  apellido2,
   telefono
 )</code></pre>
                 </article>
@@ -523,10 +531,354 @@ donde
           </div>
         </details>
       </section>
+          </div>
+        </details>
+      <details id="solucion-revisada" class="content-panel min-w-0 self-start" open>
+        <summary class="panel-summary"><span class="panel-eyebrow">Ejercicio 5 · Revisión</span><span id="revisado-titulo" class="panel-title">Modelo revisado con Rita</span><span class="panel-description">Modelo completo, cambios justificados y consultas de presentación.</span><span class="panel-toggle">Abrir / cerrar modelo revisado</span></summary>
+        <div class="space-y-8 border-t border-slate-200 px-5 py-6 text-sm leading-7 sm:px-8">
+          <p>La solución original representa de forma sencilla los requisitos iniciales. Esta revisión incorpora catálogos y las decisiones acordadas en la corrección. Conservamos las especializaciones ISA, las relaciones de los viajes y la entidad débil.</p>
+          <section aria-labelledby="foto-rita-titulo">
+  <h3 id="foto-rita-titulo" class="text-xl font-bold text-slate-950">Diagrama de Rita · modelo revisado</h3>
+  <p class="mt-3">Diagrama de relaciones adaptado al estilo de nuestro cuaderno a partir de la fotografía de Access. Las claves se muestran dentro de las tablas y las líneas conectan las tablas relacionadas. Se emplean los nombres del modelo revisado documentado e incluimos los catálogos de categorías y departamentos acordados en la corrección.</p>
+  <figure class="mt-5 overflow-x-auto rounded-xl border border-slate-200 bg-white p-4">
+    <svg viewBox="0 0 1540 1270" role="img" aria-labelledby="rita-access-titulo rita-access-desc" class="mx-auto h-auto min-w-[70rem] w-full">
+      <title id="rita-access-titulo">Diagrama relacional revisado de la empresa de transporte</title>
+      <desc id="rita-access-desc">Trece tablas con atributos, claves primarias y foráneas. Marcas tiene modelos y modelos tiene vehículos. Vehículos se especializa en camiones y furgonetas. Empleados se especializa en conductores y administrativos, relacionados con categorías y departamentos. Viajes referencia conductores y vehículos; tramos depende de viajes. Administrativos y viajes se relacionan mediante una tabla intermedia.</desc>
+      <path d="M320 105H420" class="diagram-lines"/><text x="340" y="92" class="diagram-label" font-size="17">1</text><text x="400" y="92" class="diagram-label" font-size="17">N</text>
+<path d="M720 105H820" class="diagram-lines"/><text x="740" y="92" class="diagram-label" font-size="17">1</text><text x="800" y="92" class="diagram-label" font-size="17">N</text>
+<path d="M1120 90H1220" class="diagram-lines"/><text x="1140" y="77" class="diagram-label" font-size="17">1</text><text x="1200" y="77" class="diagram-label" font-size="17">0..1</text>
+<path d="M1120 140H1170V350H1220" class="diagram-lines"/><text x="1140" y="128" class="diagram-label" font-size="17">1</text><text x="1196" y="337" class="diagram-label" font-size="17">0..1</text>
+<path d="M970 182V560" class="diagram-lines"/><text x="995" y="210" class="diagram-label" font-size="17">1</text><text x="995" y="540" class="diagram-label" font-size="17">N</text>
+<path d="M570 452V560" class="diagram-lines"/><text x="590" y="480" class="diagram-label" font-size="17">1</text><text x="590" y="540" class="diagram-label" font-size="17">N</text>
+<path d="M320 620H420" class="diagram-lines"/><text x="340" y="605" class="diagram-label" font-size="17">1</text><text x="395" y="605" class="diagram-label" font-size="17">0..1</text>
+<path d="M170 741V1110H420" class="diagram-lines"/><text x="195" y="770" class="diagram-label" font-size="17">1</text><text x="390" y="1095" class="diagram-label" font-size="17">0..1</text>
+<path d="M320 1160H420" class="diagram-lines"/><text x="340" y="1145" class="diagram-label" font-size="17">1</text><text x="400" y="1145" class="diagram-label" font-size="17">N</text>
+<path d="M720 640H820" class="diagram-lines"/><text x="740" y="625" class="diagram-label" font-size="17">1</text><text x="800" y="625" class="diagram-label" font-size="17">N</text>
+<path d="M1120 640H1220" class="diagram-lines"/><text x="1140" y="625" class="diagram-label" font-size="17">1</text><text x="1200" y="625" class="diagram-label" font-size="17">N</text>
+<path d="M970 741V1040" class="diagram-lines"/><text x="995" y="775" class="diagram-label" font-size="17">1</text><text x="995" y="1020" class="diagram-label" font-size="17">N</text>
+<path d="M720 1110H820" class="diagram-lines"/><text x="740" y="1095" class="diagram-label" font-size="17">1</text><text x="800" y="1095" class="diagram-label" font-size="17">N</text>
+      <g><rect x="20" y="30" width="300" height="123" rx="10" class="diagram-entity-primary"/><path d="M20 76H320" class="diagram-entity-weak-inner"/><text x="170" y="61" class="diagram-title" font-size="22">marcas</text><text x="170" y="106" class="diagram-text" font-size="17">pk_marca · PK</text><text x="170" y="135" class="diagram-text" font-size="17">nombre</text></g>
+<g><rect x="420" y="30" width="300" height="152" rx="10" class="diagram-entity-primary"/><path d="M420 76H720" class="diagram-entity-weak-inner"/><text x="570" y="61" class="diagram-title" font-size="22">modelos</text><text x="570" y="106" class="diagram-text" font-size="17">pk_modelo · PK</text><text x="570" y="135" class="diagram-text" font-size="17">fk_marca · FK</text><text x="570" y="164" class="diagram-text" font-size="17">nombre</text></g>
+<g><rect x="820" y="30" width="300" height="152" rx="10" class="diagram-entity-primary"/><path d="M820 76H1120" class="diagram-entity-weak-inner"/><text x="970" y="61" class="diagram-title" font-size="22">vehiculos</text><text x="970" y="106" class="diagram-text" font-size="17">matricula · PK</text><text x="970" y="135" class="diagram-text" font-size="17">fk_modelo · FK</text><text x="970" y="164" class="diagram-text" font-size="17">anio</text></g>
+<g><rect x="1220" y="30" width="300" height="123" rx="10" class="diagram-entity-primary"/><path d="M1220 76H1520" class="diagram-entity-weak-inner"/><text x="1370" y="61" class="diagram-title" font-size="22">camiones</text><text x="1370" y="106" class="diagram-text" font-size="17">matricula · PK / FK</text><text x="1370" y="135" class="diagram-text" font-size="17">tonelaje_maximo</text></g>
+<g><rect x="1220" y="290" width="300" height="123" rx="10" class="diagram-entity-primary"/><path d="M1220 336H1520" class="diagram-entity-weak-inner"/><text x="1370" y="321" class="diagram-title" font-size="22">furgonetas</text><text x="1370" y="366" class="diagram-text" font-size="17">matricula · PK / FK</text><text x="1370" y="395" class="diagram-text" font-size="17">capacidad_m3</text></g>
+<g><rect x="420" y="300" width="300" height="152" rx="10" class="diagram-entity-primary"/><path d="M420 346H720" class="diagram-entity-weak-inner"/><text x="570" y="331" class="diagram-title" font-size="22">categorias_carnet</text><text x="570" y="376" class="diagram-text" font-size="17">pk_categoria · PK</text><text x="570" y="405" class="diagram-text" font-size="17">nombre_categoria</text><text x="570" y="434" class="diagram-text" font-size="17">descripcion</text></g>
+<g><rect x="20" y="560" width="300" height="181" rx="10" class="diagram-entity-primary"/><path d="M20 606H320" class="diagram-entity-weak-inner"/><text x="170" y="591" class="diagram-title" font-size="22">empleados</text><text x="170" y="636" class="diagram-text" font-size="17">dni · PK</text><text x="170" y="665" class="diagram-text" font-size="17">nombre</text><text x="170" y="694" class="diagram-text" font-size="17">apellido1 · apellido2</text><text x="170" y="723" class="diagram-text" font-size="17">telefono</text></g>
+<g><rect x="420" y="560" width="300" height="152" rx="10" class="diagram-entity-primary"/><path d="M420 606H720" class="diagram-entity-weak-inner"/><text x="570" y="591" class="diagram-title" font-size="22">conductores</text><text x="570" y="636" class="diagram-text" font-size="17">dni · PK / FK</text><text x="570" y="665" class="diagram-text" font-size="17">numero_carnet</text><text x="570" y="694" class="diagram-text" font-size="17">fk_categoria · FK</text></g>
+<g><rect x="820" y="560" width="300" height="181" rx="10" class="diagram-entity-primary"/><path d="M820 606H1120" class="diagram-entity-weak-inner"/><text x="970" y="591" class="diagram-title" font-size="22">viajes</text><text x="970" y="636" class="diagram-text" font-size="17">numero_viaje · PK</text><text x="970" y="665" class="diagram-text" font-size="17">origen · destino</text><text x="970" y="694" class="diagram-text" font-size="17">dni_conductor · FK</text><text x="970" y="723" class="diagram-text" font-size="17">matricula_vehiculo · FK</text></g>
+<g><rect x="1220" y="560" width="300" height="181" rx="10" class="diagram-entity-weak"/><rect x="1226" y="566" width="288" height="169" rx="6" class="diagram-entity-weak-inner"/><path d="M1220 606H1520" class="diagram-entity-weak-inner"/><text x="1370" y="591" class="diagram-title" font-size="22">tramos</text><text x="1370" y="636" class="diagram-text" font-size="17">numero_viaje · PK+ / FK</text><text x="1370" y="665" class="diagram-text" font-size="17">numero_tramo · PK+</text><text x="1370" y="694" class="diagram-text" font-size="17">distancia_km</text><text x="1370" y="723" class="diagram-text" font-size="17">fecha_inicio · fecha_fin</text></g>
+<g><rect x="20" y="1040" width="300" height="152" rx="10" class="diagram-entity-primary"/><path d="M20 1086H320" class="diagram-entity-weak-inner"/><text x="170" y="1071" class="diagram-title" font-size="22">departamentos</text><text x="170" y="1116" class="diagram-text" font-size="17">pk_departamento · PK</text><text x="170" y="1145" class="diagram-text" font-size="17">nombre</text><text x="170" y="1174" class="diagram-text" font-size="17">descripcion</text></g>
+<g><rect x="420" y="1040" width="300" height="123" rx="10" class="diagram-entity-primary"/><path d="M420 1086H720" class="diagram-entity-weak-inner"/><text x="570" y="1071" class="diagram-title" font-size="22">administrativos</text><text x="570" y="1116" class="diagram-text" font-size="17">dni · PK / FK</text><text x="570" y="1145" class="diagram-text" font-size="17">fk_departamento · FK</text></g>
+<g><rect x="820" y="1040" width="300" height="123" rx="10" class="diagram-entity-primary"/><path d="M820 1086H1120" class="diagram-entity-weak-inner"/><text x="970" y="1071" class="diagram-title" font-size="19">administrativos_viajes</text><text x="970" y="1116" class="diagram-text" font-size="17">dni_administrativo · PK+ / FK</text><text x="970" y="1145" class="diagram-text" font-size="17">numero_viaje · PK+ / FK</text></g>
+    </svg>
+    <figcaption class="mt-4 space-y-2 text-slate-600">
+      <p><strong>PK</strong>: clave primaria. <strong>FK</strong>: clave foránea. <strong>PK+</strong>: parte de una clave primaria compuesta. En pantallas pequeñas puedes desplazar el diagrama horizontalmente.</p>
+      <p><strong>Especializaciones ISA:</strong> cada subtipo tiene un único padre (1), y cada padre puede tener 0..1 filas en cada subtipo. Ambas especializaciones son totales y disjuntas: cada padre pertenece exactamente a uno de sus dos subtipos.</p>
+      <p><strong>Relaciones 1:N:</strong> las claves foráneas están en el lado N. En los catálogos puede haber 0..N registros asociados; cada hijo referencia exactamente un padre. Cada viaje tiene 1..N tramos y cada tramo pertenece a un viaje.</p>
+      <p><strong>Relación N:M:</strong> ADMINISTRATIVOS_VIAJES enlaza administrativos y viajes mediante dos relaciones 1:N; su PK es (dni_administrativo, numero_viaje). TRAMOS tiene PK (numero_viaje, numero_tramo) y su FK a VIAJES usa borrado en cascada.</p>
+    </figcaption>
+  </figure>
+</section>
+<section aria-labelledby="rita-paso-1-titulo" class="content-panel">
+  <details class="group">
+    <summary class="panel-summary">
+      <span class="panel-eyebrow">Modelo revisado con Rita</span>
+      <span id="rita-paso-1-titulo" class="panel-title">Paso 1. Identificar las entidades del enunciado</span>
+      <span class="panel-toggle"><span class="group-open:hidden">Ver contenido</span><span class="hidden group-open:inline">Ocultar contenido</span></span>
+    </summary>
+    <div class="border-t border-slate-200 px-5 py-6 space-y-5"><p>Entidades revisadas: MARCAS, MODELOS, VEHICULOS, CAMIONES, FURGONETAS, EMPLEADOS, CATEGORIAS_CARNET, CONDUCTORES, DEPARTAMENTOS, ADMINISTRATIVOS, VIAJES y TRAMOS.</p><p>La relación N:M GESTIONA se transforma en la tabla ADMINISTRATIVOS_VIAJES. Las tablas completas y sus claves se presentan en el paso 7.</p></div>
+  </details>
+</section>
+<section aria-labelledby="rita-paso-2-titulo" class="content-panel">
+  <details class="group">
+    <summary class="panel-summary">
+      <span class="panel-eyebrow">Modelo revisado con Rita</span>
+      <span id="rita-paso-2-titulo" class="panel-title">Paso 2. Dibujamos nuestra primera relación ISA</span>
+      <span class="panel-toggle"><span class="group-open:hidden">Ver contenido</span><span class="hidden group-open:inline">Ocultar contenido</span></span>
+    </summary>
+    <div class="border-t border-slate-200 px-5 py-6 space-y-5"><figure class="mt-5 overflow-x-auto rounded-xl border border-slate-200 p-3"><svg viewBox="0 0 1000 665" role="img" aria-labelledby="paso-er-vehiculos-rita-titulo paso-er-vehiculos-rita-desc" class="h-auto min-w-[45rem] w-full"><title id="paso-er-vehiculos-rita-titulo">Vehículos: marcas, modelos y especialización ISA</title><desc id="paso-er-vehiculos-rita-desc">Una marca tiene muchos modelos. Un modelo define muchos vehículos. Vehículos se especializa de forma total y disjunta en camiones y furgonetas.</desc><path d="M250 100H320M460 100H530M790 100H815M955 100H975V260H650M500 405V440H250V475M500 440H750V475" class="diagram-lines"/><rect x="10" y="35" width="240" height="130" rx="8" class="diagram-entity-primary"/><text x="130" y="67" class="diagram-title" font-size="22">MARCAS</text><text x="130" y="98" class="diagram-text" font-size="16">pk_marca (PK)</text><text x="130" y="123" class="diagram-text" font-size="16">nombre</text><path d="M390 58L460 100L390 142L320 100Z" class="diagram-relationship"/><text x="390" y="105" class="diagram-text" font-size="15">tiene</text><rect x="530" y="35" width="260" height="130" rx="8" class="diagram-entity-primary"/><text x="660" y="67" class="diagram-title" font-size="22">MODELOS</text><text x="660" y="98" class="diagram-text" font-size="16">pk_modelo (PK)</text><text x="660" y="123" class="diagram-text" font-size="16">nombre</text><path d="M885 58L955 100L885 142L815 100Z" class="diagram-relationship"/><text x="885" y="105" class="diagram-text" font-size="15">define</text><rect x="350" y="185" width="300" height="150" rx="8" class="diagram-entity-primary"/><text x="500" y="217" class="diagram-title" font-size="22">VEHICULOS</text><text x="500" y="248" class="diagram-text" font-size="16">matricula (PK)</text><text x="500" y="273" class="diagram-text" font-size="16">anio</text><path d="M500 335L440 405H560Z" class="diagram-relationship-isa"/><text x="500" y="387" class="diagram-title" font-size="20">ISA</text><rect x="80" y="475" width="340" height="120" rx="8" class="diagram-entity-primary"/><text x="250" y="507" class="diagram-title" font-size="22">CAMIONES</text><text x="250" y="538" class="diagram-text" font-size="16">tonelaje_maximo</text><rect x="580" y="475" width="340" height="120" rx="8" class="diagram-entity-primary"/><text x="750" y="507" class="diagram-title" font-size="22">FURGONETAS</text><text x="750" y="538" class="diagram-text" font-size="16">capacidad_m3</text><text x="275" y="85" class="diagram-label" font-size="16">1</text><text x="505" y="85" class="diagram-label" font-size="16">N</text><text x="803" y="75" class="diagram-label" font-size="16">1</text><text x="970" y="190" class="diagram-label" font-size="16">N</text><text x="500" y="635" class="diagram-label" font-size="16">ISA TOTAL Y DISJUNTA · clave heredada: matricula</text></svg><figcaption class="mt-3 text-slate-600">MARCAS 1:N MODELOS y MODELOS 1:N VEHICULOS. Cada vehículo pertenece a un modelo y cada modelo a una marca. CAMIONES y FURGONETAS heredan matricula; en el modelo relacional es PK y FK hacia VEHICULOS.</figcaption></figure></div>
+  </details>
+</section>
+<section aria-labelledby="rita-paso-3-titulo" class="content-panel">
+  <details class="group">
+    <summary class="panel-summary">
+      <span class="panel-eyebrow">Modelo revisado con Rita</span>
+      <span id="rita-paso-3-titulo" class="panel-title">Paso 3. Segunda relación ISA: empleados</span>
+      <span class="panel-toggle"><span class="group-open:hidden">Ver contenido</span><span class="hidden group-open:inline">Ocultar contenido</span></span>
+    </summary>
+    <div class="border-t border-slate-200 px-5 py-6 space-y-5"><figure class="mt-5 overflow-x-auto rounded-xl border border-slate-200 p-3"><svg viewBox="0 0 1000 925" role="img" aria-labelledby="paso-er-empleados-rita-titulo paso-er-empleados-rita-desc" class="h-auto min-w-[45rem] w-full"><title id="paso-er-empleados-rita-titulo">Empleados: especialización y catálogos</title><desc id="paso-er-empleados-rita-desc">Empleados se especializa de forma total y disjunta en conductores y administrativos. Una categoría tiene muchos conductores y un departamento muchos administrativos.</desc><path d="M500 190V230M500 300V330H240V375M500 330H760V375M240 515V565M240 649V700M760 515V565M760 649V700" class="diagram-lines"/><rect x="330" y="15" width="340" height="175" rx="8" class="diagram-entity-primary"/><text x="500" y="47" class="diagram-title" font-size="22">EMPLEADOS</text><text x="500" y="78" class="diagram-text" font-size="16">dni (PK)</text><text x="500" y="103" class="diagram-text" font-size="16">nombre · apellido1 · apellido2</text><text x="500" y="128" class="diagram-text" font-size="16">telefono</text><path d="M500 230L440 300H560Z" class="diagram-relationship-isa"/><text x="500" y="282" class="diagram-title" font-size="20">ISA</text><rect x="80" y="375" width="320" height="140" rx="8" class="diagram-entity-primary"/><text x="240" y="407" class="diagram-title" font-size="22">CONDUCTORES</text><text x="240" y="438" class="diagram-text" font-size="16">dni (heredado)</text><text x="240" y="463" class="diagram-text" font-size="16">numero_carnet</text><rect x="600" y="375" width="320" height="140" rx="8" class="diagram-entity-primary"/><text x="760" y="407" class="diagram-title" font-size="22">ADMINISTRATIVOS</text><text x="760" y="438" class="diagram-text" font-size="16">dni (heredado)</text><path d="M240 565L310 607L240 649L170 607Z" class="diagram-relationship"/><text x="240" y="612" class="diagram-text" font-size="15">posee</text><path d="M760 565L830 607L760 649L690 607Z" class="diagram-relationship"/><text x="760" y="612" class="diagram-text" font-size="15">pertenece</text><rect x="55" y="700" width="370" height="150" rx="8" class="diagram-entity-primary"/><text x="240" y="732" class="diagram-title" font-size="22">CATEGORIAS_CARNET</text><text x="240" y="763" class="diagram-text" font-size="16">pk_categoria (PK)</text><text x="240" y="788" class="diagram-text" font-size="16">nombre_categoria · descripcion</text><rect x="580" y="700" width="360" height="150" rx="8" class="diagram-entity-primary"/><text x="760" y="732" class="diagram-title" font-size="22">DEPARTAMENTOS</text><text x="760" y="763" class="diagram-text" font-size="16">pk_departamento (PK)</text><text x="760" y="788" class="diagram-text" font-size="16">nombre · descripcion</text><text x="265" y="552" class="diagram-label" font-size="16">N</text><text x="265" y="682" class="diagram-label" font-size="16">1</text><text x="785" y="552" class="diagram-label" font-size="16">N</text><text x="785" y="682" class="diagram-label" font-size="16">1</text><text x="500" y="895" class="diagram-label" font-size="16">ISA TOTAL Y DISJUNTA · una categoría y un departamento por su subtipo</text></svg><figcaption class="mt-3 text-slate-600">Los subtipos heredan dni, que será PK y FK hacia EMPLEADOS. Cada conductor tiene una categoría; cada administrativo, un departamento. Las relaciones con los catálogos se transforman en fk_categoria y fk_departamento.</figcaption></figure></div>
+  </details>
+</section>
+<section aria-labelledby="rita-paso-4-titulo" class="content-panel">
+  <details class="group">
+    <summary class="panel-summary">
+      <span class="panel-eyebrow">Modelo revisado con Rita</span>
+      <span id="rita-paso-4-titulo" class="panel-title">Paso 4. Relaciones de los viajes</span>
+      <span class="panel-toggle"><span class="group-open:hidden">Ver contenido</span><span class="hidden group-open:inline">Ocultar contenido</span></span>
+    </summary>
+    <div class="border-t border-slate-200 px-5 py-6 space-y-5"><figure class="mt-5 overflow-x-auto rounded-xl border border-slate-200 p-3"><svg viewBox="0 0 1000 855" role="img" aria-labelledby="paso-er-viajes-rita-titulo paso-er-viajes-rita-desc" class="h-auto min-w-[45rem] w-full"><title id="paso-er-viajes-rita-titulo">Viajes, gestión administrativa y entidad débil tramos</title><desc id="paso-er-viajes-rita-desc">Un conductor y un vehículo pueden realizar muchos viajes. Administrativos gestiona viajes con cardinalidad N:M. Cada viaje contiene tramos, entidad débil con participación total y discriminador numero_tramo.</desc><path d="M250 100H320M460 100H490V280H520M760 100H785M925 100H980V320H790M270 320H360M500 320H520M650 415V475M650 559V615" class="diagram-lines"/><rect x="10" y="35" width="240" height="130" rx="8" class="diagram-entity-primary"/><text x="130" y="67" class="diagram-title" font-size="22">CONDUCTORES</text><text x="130" y="98" class="diagram-text" font-size="16">dni (heredado)</text><path d="M390 58L460 100L390 142L320 100Z" class="diagram-relationship"/><text x="390" y="105" class="diagram-text" font-size="15">realiza</text><rect x="520" y="35" width="240" height="130" rx="8" class="diagram-entity-primary"/><text x="640" y="67" class="diagram-title" font-size="22">VEHICULOS</text><text x="640" y="98" class="diagram-text" font-size="16">matricula (PK)</text><path d="M855 58L925 100L855 142L785 100Z" class="diagram-relationship"/><text x="855" y="105" class="diagram-text" font-size="15">utiliza</text><rect x="10" y="250" width="260" height="140" rx="8" class="diagram-entity-primary"/><text x="140" y="282" class="diagram-title" font-size="22">ADMINISTRATIVOS</text><text x="140" y="313" class="diagram-text" font-size="16">dni (heredado)</text><path d="M430 278L500 320L430 362L360 320Z" class="diagram-relationship"/><text x="430" y="325" class="diagram-text" font-size="15">gestiona</text><rect x="520" y="235" width="270" height="180" rx="8" class="diagram-entity-primary"/><text x="655" y="267" class="diagram-title" font-size="22">VIAJES</text><text x="655" y="298" class="diagram-text" font-size="16">numero_viaje (PK)</text><text x="655" y="323" class="diagram-text" font-size="16">origen · destino</text><path d="M650 475L720 517L650 559L580 517Z" class="diagram-relationship"/><path d="M650 483L708 517L650 551L592 517Z" class="diagram-entity-weak-inner"/><text x="650" y="522" class="diagram-text" font-size="15">contiene</text><rect x="455" y="615" width="390" height="160" rx="8" class="diagram-entity-weak"/><rect x="462" y="622" width="376" height="146" rx="5" class="diagram-entity-weak-inner"/><text x="650" y="647" class="diagram-title" font-size="22">TRAMOS</text><text x="650" y="678" class="diagram-text" font-size="16">numero_tramo (discriminador)</text><text x="650" y="703" class="diagram-text" font-size="16">distancia_km</text><text x="650" y="728" class="diagram-text" font-size="16">fecha_inicio · fecha_fin</text><path d="M642 559V615M658 559V615" class="diagram-lines"/><text x="280" y="85" class="diagram-label" font-size="16">1</text><text x="495" y="85" class="diagram-label" font-size="16">N</text><text x="772" y="78" class="diagram-label" font-size="16">1</text><text x="940" y="300" class="diagram-label" font-size="16">N</text><text x="305" y="305" class="diagram-label" font-size="16">N</text><text x="510" y="305" class="diagram-label" font-size="16">M</text><text x="675" y="460" class="diagram-label" font-size="16">1</text><text x="680" y="600" class="diagram-label" font-size="16">N</text><text x="500" y="825" class="diagram-label" font-size="16">TRAMOS: identificación por (numero_viaje, numero_tramo)</text></svg><figcaption class="mt-3 text-slate-600">GESTIONA es una relación N:M: se transforma en ADMINISTRATIVOS_VIAJES con PK (dni_administrativo, numero_viaje). El rectángulo y rombo dobles identifican la entidad débil y su relación identificadora; la doble línea hacia TRAMOS indica participación total. No se incluye fecha_salida en VIAJES.</figcaption></figure></div>
+  </details>
+</section>
+<section aria-labelledby="rita-paso-5-titulo" class="content-panel">
+  <details class="group">
+    <summary class="panel-summary">
+      <span class="panel-eyebrow">Modelo revisado con Rita</span>
+      <span id="rita-paso-5-titulo" class="panel-title">Paso 5. Entidad débil: tramos</span>
+      <span class="panel-toggle"><span class="group-open:hidden">Ver contenido</span><span class="hidden group-open:inline">Ocultar contenido</span></span>
+    </summary>
+    <div class="border-t border-slate-200 px-5 py-6 space-y-5">
+          <div class="border-t border-slate-200">
+            <figure class="diagram-figure">
+              <svg viewBox="0 0 900 390" role="img" aria-labelledby="rita-copia-tramos-debiles-titulo rita-copia-tramos-debiles-descripcion" class="mx-auto h-auto min-w-[48rem] w-full max-w-4xl sm:min-w-0">
+                <title id="rita-copia-tramos-debiles-titulo">Entidad débil tramos identificada por viajes</title>
+                <desc id="rita-copia-tramos-debiles-descripcion">La entidad fuerte viajes, identificada por numero_viaje, se relaciona con la entidad débil tramos mediante la relación identificadora se divide en. Un viaje puede tener varios tramos y cada tramo pertenece a un viaje. numero_tramo es el discriminador de tramos.</desc>
+                <g class="diagram-lines">
+                  <path d="M325 195H375M525 195H575"/>
+                  <path d="M525 187H575M525 203H575"/>
+                </g>
+                <rect x="70" y="130" width="255" height="130" rx="10" class="diagram-entity-primary"/>
+                <text x="197" y="170" class="diagram-title text-2xl">viajes</text>
+                <text x="197" y="205" class="diagram-text text-lg">numero_viaje (PK)</text>
+                <text x="197" y="232" class="diagram-text text-base">entidad fuerte</text>
+                <path d="M450 130L525 195L450 260L375 195Z" class="diagram-relationship-isa"/>
+                <path d="M450 140L513 195L450 250L387 195Z" class="diagram-entity-weak-inner"/>
+                <text x="450" y="191" class="diagram-text text-base">se divide</text>
+                <text x="450" y="213" class="diagram-text text-base">en</text>
+                <rect x="575" y="110" width="255" height="170" rx="10" class="diagram-entity-weak"/>
+                <rect x="583" y="118" width="239" height="154" rx="6" class="diagram-entity-weak-inner"/>
+                <text x="702" y="151" class="diagram-title text-2xl">tramos</text>
+                <text x="702" y="184" class="diagram-text text-base">numero_tramo (discriminador)</text>
+                <text x="702" y="211" class="diagram-text text-base">distancia_km</text>
+                <text x="702" y="238" class="diagram-text text-base">fecha_inicio · fecha_fin</text>
+                <text x="350" y="181" class="diagram-label text-base">1</text>
+                <text x="550" y="181" class="diagram-label text-base">N</text>
+                <text x="450" y="325" class="diagram-label text-base">Relación identificadora · participación total de tramos</text>
+                <text x="450" y="352" class="diagram-label text-[15px]">numero_tramo solo distingue tramos dentro de cada viaje</text>
+              </svg>
+              <figcaption class="diagram-caption max-w-2xl">
+                <p><strong class="font-semibold text-slate-950">Entidad fuerte:</strong> <code>viajes</code>, identificada mediante <code>numero_viaje</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Entidad débil:</strong> <code>tramos</code>, con los atributos <code>numero_tramo</code>, <code>distancia_km</code>, <code>fecha_inicio</code> y <code>fecha_fin</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Cardinalidad:</strong> 1:N. Un viaje puede tener varios tramos, pero cada tramo pertenece a un solo viaje.</p>
+                <p class="mt-2 rounded-lg border-l-4 border-indigo-500 bg-indigo-50 px-4 py-3"><strong class="font-semibold text-slate-950">Nota sobre la doble línea:</strong> la línea doble entre la relación identificadora y <code>tramos</code> indica participación total: todo tramo debe estar relacionado con un viaje. No indica la cardinalidad N, que se muestra por separado.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Dependencia por identificación:</strong> <code>numero_tramo</code> es el discriminador de la entidad débil, pero no identifica un tramo de forma única porque se puede repetir en distintos viajes. Al transformar el diseño al modelo relacional, la clave primaria será la combinación <code>(numero_viaje, numero_tramo)</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Dependencia por existencia:</strong> si se elimina un viaje, también deben desaparecer sus tramos.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Conclusión:</strong> <code>tramos</code> es una entidad débil por identificación y existencia.</p>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+  </details>
+</section>
+<section aria-labelledby="rita-paso-6-titulo" class="content-panel">
+  <details class="group">
+    <summary class="panel-summary">
+      <span class="panel-eyebrow">Modelo revisado con Rita</span>
+      <span id="rita-paso-6-titulo" class="panel-title">Paso 6. Relación N:M: administrativos y viajes</span>
+      <span class="panel-toggle"><span class="group-open:hidden">Ver contenido</span><span class="hidden group-open:inline">Ocultar contenido</span></span>
+    </summary>
+    <div class="border-t border-slate-200 px-5 py-6 space-y-5">
+          <div class="border-t border-slate-200">
+            <figure class="diagram-figure">
+              <svg viewBox="0 0 900 330" role="img" aria-labelledby="rita-copia-administrativos-viajes-titulo rita-copia-administrativos-viajes-descripcion" class="mx-auto h-auto min-w-[48rem] w-full max-w-4xl sm:min-w-0">
+                <title id="rita-copia-administrativos-viajes-titulo">Relación N:M entre administrativos y viajes</title>
+                <desc id="rita-copia-administrativos-viajes-descripcion">La entidad administrativos se relaciona con la entidad viajes mediante el rombo simple gestiona. La cardinalidad es N en ambos extremos.</desc>
+                <g class="diagram-lines">
+                  <path d="M300 155H375M525 155H600"/>
+                </g>
+                <rect x="70" y="95" width="230" height="120" rx="9" class="diagram-entity-secondary"/>
+                <text x="185" y="145" class="diagram-title text-2xl">administrativos</text>
+                <path d="M450 100L525 155L450 210L375 155Z" class="diagram-relationship"/>
+                <text x="450" y="160" class="diagram-text text-lg">gestiona</text>
+                <rect x="600" y="95" width="230" height="120" rx="9" class="diagram-entity-primary"/>
+                <text x="715" y="145" class="diagram-title text-2xl">viajes</text>
+                <text x="338" y="144" class="diagram-label text-[17px]">N</text>
+                <text x="562" y="144" class="diagram-label text-[17px]">N</text>
+                <text x="450" y="275" class="diagram-label text-base">N:M · Muchos a muchos</text>
+              </svg>
+              <figcaption class="diagram-caption max-w-2xl">
+                <p><strong class="font-semibold text-slate-950">Entidades:</strong> <code>administrativos</code> y <code>viajes</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Relación:</strong> <code>gestiona</code>.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Cardinalidad:</strong> N:M (muchos a muchos).</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Justificación:</strong> un administrativo puede gestionar varios viajes y un viaje puede tener varios administrativos.</p>
+                <p class="mt-2"><strong class="font-semibold text-slate-950">Transformación posterior:</strong> al pasar al modelo relacional, crearemos la tabla intermedia <code>administrativos_viajes</code> para representar esta relación.</p>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+  </details>
+</section>
+<section aria-labelledby="rita-paso-7-titulo" class="content-panel">
+  <details class="group">
+    <summary class="panel-summary">
+      <span class="panel-eyebrow">Modelo revisado con Rita</span>
+      <span id="rita-paso-7-titulo" class="panel-title">Paso 7. Modelo relacional</span>
+      <span class="panel-toggle"><span class="group-open:hidden">Ver contenido</span><span class="hidden group-open:inline">Ocultar contenido</span></span>
+    </summary>
+    <div class="border-t border-slate-200 px-5 py-6 space-y-5">
+<section aria-labelledby="tablas-rita"><h3 id="tablas-rita" class="text-xl font-bold text-slate-950">Modelo relacional revisado</h3><p class="mt-3">PK: clave primaria. FK: clave foránea. PK+: parte de una PK compuesta. Las FK son obligatorias; las PK ya impiden valores nulos. Estos esquemas describen las tablas, no son instrucciones CREATE TABLE ejecutables.</p><div class="mt-4 grid gap-4"><article class="schema-card min-w-0"><h4 class="schema-card-title">MARCAS</h4><pre class="schema-code"><code>MARCAS (
+  pk_marca PK,
+  nombre NOT NULL, UNIQUE
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">MODELOS</h4><pre class="schema-code"><code>MODELOS (
+  pk_modelo PK,
+  fk_marca FK → MARCAS.pk_marca, NOT NULL,
+  nombre NOT NULL,
+  UNIQUE (fk_marca, nombre)
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">VEHICULOS</h4><pre class="schema-code"><code>VEHICULOS (
+  matricula PK,
+  fk_modelo FK → MODELOS.pk_modelo, NOT NULL,
+  anio
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">CAMIONES</h4><pre class="schema-code"><code>CAMIONES (
+  matricula PK, FK → VEHICULOS.matricula,
+  tonelaje_maximo
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">FURGONETAS</h4><pre class="schema-code"><code>FURGONETAS (
+  matricula PK, FK → VEHICULOS.matricula,
+  capacidad_m3
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">EMPLEADOS</h4><pre class="schema-code"><code>EMPLEADOS (
+  dni PK,
+  nombre,
+  apellido1,
+  apellido2,
+  telefono
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">CATEGORIAS_CARNET</h4><pre class="schema-code"><code>CATEGORIAS_CARNET (
+  pk_categoria PK,
+  nombre_categoria NOT NULL, UNIQUE,
+  descripcion
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">CONDUCTORES</h4><pre class="schema-code"><code>CONDUCTORES (
+  dni PK, FK → EMPLEADOS.dni,
+  numero_carnet,
+  fk_categoria FK → CATEGORIAS_CARNET.pk_categoria, NOT NULL
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">DEPARTAMENTOS</h4><pre class="schema-code"><code>DEPARTAMENTOS (
+  pk_departamento PK,
+  nombre NOT NULL, UNIQUE,
+  descripcion
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">ADMINISTRATIVOS</h4><pre class="schema-code"><code>ADMINISTRATIVOS (
+  dni PK, FK → EMPLEADOS.dni,
+  fk_departamento FK → DEPARTAMENTOS.pk_departamento, NOT NULL
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">VIAJES</h4><pre class="schema-code"><code>VIAJES (
+  numero_viaje PK,
+  origen,
+  destino,
+  dni_conductor FK → CONDUCTORES.dni, NOT NULL,
+  matricula_vehiculo FK → VEHICULOS.matricula, NOT NULL
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">TRAMOS</h4><pre class="schema-code"><code>TRAMOS (
+  numero_viaje PK+, FK → VIAJES.numero_viaje,
+  numero_tramo PK+,
+  distancia_km,
+  fecha_inicio,
+  fecha_fin,
+  PK (numero_viaje, numero_tramo)
+)</code></pre></article>
+<article class="schema-card min-w-0"><h4 class="schema-card-title">ADMINISTRATIVOS_VIAJES</h4><pre class="schema-code"><code>ADMINISTRATIVOS_VIAJES (
+  dni_administrativo PK+, FK → ADMINISTRATIVOS.dni,
+  numero_viaje PK+, FK → VIAJES.numero_viaje,
+  PK (dni_administrativo, numero_viaje)
+)</code></pre></article></div>
+<div aria-labelledby="catalogos-rita"><h4 id="catalogos-rita" class="text-xl font-bold text-slate-950">Datos iniciales de los catálogos</h4>
+            <p class="mt-3">Los identificadores son ejemplos de claves estables; los códigos de categoría se guardan como nombres del catálogo.</p>
+            <div class="mt-4 overflow-x-auto"><table class="w-full text-left"><caption class="font-semibold text-slate-950">CATEGORIAS_CARNET</caption><thead><tr><th scope="col" class="p-2">pk_categoria</th><th scope="col" class="p-2">nombre_categoria</th><th scope="col" class="p-2">descripcion</th></tr></thead><tbody><tr class="border-t border-slate-200"><td class="p-2">1</td><td class="p-2">A</td><td class="p-2">Categoría A del catálogo del ejercicio.</td></tr><tr class="border-t border-slate-200"><td class="p-2">2</td><td class="p-2">B</td><td class="p-2">Categoría B del catálogo del ejercicio.</td></tr><tr class="border-t border-slate-200"><td class="p-2">3</td><td class="p-2">C1</td><td class="p-2">Categoría C1 del catálogo del ejercicio.</td></tr><tr class="border-t border-slate-200"><td class="p-2">4</td><td class="p-2">C</td><td class="p-2">Categoría C del catálogo del ejercicio.</td></tr><tr class="border-t border-slate-200"><td class="p-2">5</td><td class="p-2">C+E</td><td class="p-2">Categoría C+E del catálogo del ejercicio.</td></tr></tbody></table></div>
+            <div class="mt-4 overflow-x-auto"><table class="w-full text-left"><caption class="font-semibold text-slate-950">DEPARTAMENTOS</caption><thead><tr><th scope="col" class="p-2">pk_departamento</th><th scope="col" class="p-2">nombre</th><th scope="col" class="p-2">descripcion</th></tr></thead><tbody><tr class="border-t border-slate-200"><td class="p-2">1</td><td class="p-2">Logística</td><td class="p-2">Coordinación de transportes y rutas.</td></tr><tr class="border-t border-slate-200"><td class="p-2">2</td><td class="p-2">Administración</td><td class="p-2">Gestión administrativa.</td></tr><tr class="border-t border-slate-200"><td class="p-2">3</td><td class="p-2">IT</td><td class="p-2">Sistemas y soporte informático.</td></tr><tr class="border-t border-slate-200"><td class="p-2">4</td><td class="p-2">Recursos Humanos</td><td class="p-2">Gestión de personal.</td></tr></tbody></table></div>
+          </div>
+</section>
+<section aria-labelledby="diagrama-rita"><h3 id="diagrama-rita" class="text-xl font-bold text-slate-950">Relaciones y cardinalidades</h3><div class="mt-4 rounded-xl bg-indigo-50 p-4">
+  <h4 class="font-bold text-slate-950">Cómo interpretar 1:1, 1:N y N:M</h4>
+  <ul class="mt-3 list-disc space-y-2 pl-5">
+    <li><strong>1:1 en las ISA:</strong> cada fila de CAMIONES o FURGONETAS corresponde exactamente a una fila de VEHICULOS; cada vehículo tiene 0..1 filas en cada subtipo y, por totalidad y disyunción, exactamente una entre ambos. Lo mismo sucede con EMPLEADOS, CONDUCTORES y ADMINISTRATIVOS. La PK compartida y FK impide repetir un padre dentro del mismo subtipo.</li>
+    <li><strong>1:N:</strong> una marca tiene varios modelos; un modelo, varios vehículos; una categoría, varios conductores; un departamento, varios administrativos. Un conductor o un vehículo puede estar asociado a varios viajes, y un viaje contiene varios tramos. La FK se sitúa en el lado N.</li>
+    <li><strong>N:M:</strong> varios administrativos pueden gestionar varios viajes. ADMINISTRATIVOS_VIAJES transforma esta relación en dos relaciones 1:N y evita duplicados mediante su PK compuesta.</li>
+  </ul>
+</div>
+            <figure class="mt-4 overflow-x-auto"><svg viewBox="0 0 880 800" role="img" aria-labelledby="svg-rita-titulo svg-rita-desc" class="h-auto min-w-[40rem] w-full"><title id="svg-rita-titulo">Cardinalidades del modelo revisado</title><desc id="svg-rita-desc">Diez relaciones: marcas y modelos, modelos y vehículos, dos especializaciones ISA, catálogos de empleados, viajes y tramos y gestión N:M. Las claves se detallan en las tablas siguientes.</desc><rect x="15" y="25" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="58" class="diagram-title" font-size="16">MARCAS</text><path d="M290 52H455" class="diagram-lines"/><text x="372" y="43" class="diagram-label" font-size="16">1:N</text><rect x="455" y="25" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="58" class="diagram-title" font-size="16">MODELOS</text>
+<rect x="15" y="101" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="134" class="diagram-title" font-size="16">MODELOS</text><path d="M290 128H455" class="diagram-lines"/><text x="372" y="119" class="diagram-label" font-size="16">1:N</text><rect x="455" y="101" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="134" class="diagram-title" font-size="16">VEHICULOS</text>
+<rect x="15" y="177" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="210" class="diagram-title" font-size="16">VEHICULOS</text><path d="M290 204H455" class="diagram-lines"/><text x="372" y="195" class="diagram-label" font-size="16">ISA</text><rect x="455" y="177" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="210" class="diagram-title" font-size="16">CAMIONES / FURGONETAS</text>
+<rect x="15" y="253" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="286" class="diagram-title" font-size="16">EMPLEADOS</text><path d="M290 280H455" class="diagram-lines"/><text x="372" y="271" class="diagram-label" font-size="16">ISA</text><rect x="455" y="253" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="286" class="diagram-title" font-size="16">CONDUCTORES / ADMINISTRATIVOS</text>
+<rect x="15" y="329" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="362" class="diagram-title" font-size="16">CATEGORIAS_CARNET</text><path d="M290 356H455" class="diagram-lines"/><text x="372" y="347" class="diagram-label" font-size="16">1:N</text><rect x="455" y="329" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="362" class="diagram-title" font-size="16">CONDUCTORES</text>
+<rect x="15" y="405" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="438" class="diagram-title" font-size="16">DEPARTAMENTOS</text><path d="M290 432H455" class="diagram-lines"/><text x="372" y="423" class="diagram-label" font-size="16">1:N</text><rect x="455" y="405" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="438" class="diagram-title" font-size="16">ADMINISTRATIVOS</text>
+<rect x="15" y="481" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="514" class="diagram-title" font-size="16">CONDUCTORES</text><path d="M290 508H455" class="diagram-lines"/><text x="372" y="499" class="diagram-label" font-size="16">1:N</text><rect x="455" y="481" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="514" class="diagram-title" font-size="16">VIAJES</text>
+<rect x="15" y="557" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="590" class="diagram-title" font-size="16">VEHICULOS</text><path d="M290 584H455" class="diagram-lines"/><text x="372" y="575" class="diagram-label" font-size="16">1:N</text><rect x="455" y="557" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="590" class="diagram-title" font-size="16">VIAJES</text>
+<rect x="15" y="633" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="666" class="diagram-title" font-size="16">VIAJES</text><path d="M290 660H455" class="diagram-lines"/><text x="372" y="651" class="diagram-label" font-size="16">1:N</text><rect x="455" y="633" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="666" class="diagram-title" font-size="16">TRAMOS</text>
+<rect x="15" y="709" width="275" height="54" rx="8" class="diagram-entity-primary"/><text x="152" y="742" class="diagram-title" font-size="16">ADMINISTRATIVOS</text><path d="M290 736H455" class="diagram-lines"/><text x="372" y="727" class="diagram-label" font-size="16">N:M</text><rect x="455" y="709" width="410" height="54" rx="8" class="diagram-entity-secondary"/><text x="660" y="742" class="diagram-title" font-size="16">VIAJES (tabla intermedia)</text></svg><figcaption class="mt-3">Cada fila representa una relación. Las dos ISA son totales y disjuntas. Cada subtipo tiene exactamente un registro padre; cada padre pertenece exactamente a uno de sus dos subtipos.</figcaption></figure>
+            <ul class="mt-3 list-disc space-y-2 pl-5"><li>En los catálogos, un padre puede tener 0..N hijos; cada modelo tiene exactamente una marca y cada vehículo exactamente un modelo.</li><li>Cada conductor tiene una categoría y cada administrativo un departamento; cada categoría o departamento puede tener 0..N empleados de su tipo.</li><li>Cada viaje tiene exactamente un conductor y un vehículo; estos pueden tener 0..N viajes.</li><li>Cada viaje debe tener 1..N tramos y cada tramo exactamente un viaje. La FK garantiza el padre de cada tramo; el mínimo de un tramo por viaje requiere una regla adicional al completar el alta del viaje.</li><li>Administrativos y viajes participan con 0..N en ambos lados de la relación N:M, mediante ADMINISTRATIVOS_VIAJES.</li></ul>
+          
+<div aria-labelledby="integridad-rita"><h4 id="integridad-rita" class="text-xl font-bold text-slate-950">Integridad referencial y cascadas</h4>
+            <ul class="mt-3 list-disc space-y-3 pl-5">
+              <li>Toda FK referencia una PK existente y debe tener un tipo compatible con ella. En Access, una PK Autonumeración se referencia habitualmente mediante Número / Entero largo.</li>
+              <li>Actualización: definir ON UPDATE CASCADE en las FK cuando deba propagarse un cambio de clave, especialmente DNI, matrícula y numero_viaje, incluidas las PK/FK de los subtipos. En Access corresponde a exigir integridad referencial y activar «Actualizar en cascada los campos relacionados». Las claves artificiales de catálogos se mantienen estables; una Autonumeración no se modifica.</li>
+              <li>Borrado: TRAMOS.numero_viaje usa ON DELETE CASCADE. Al borrar un viaje también se eliminan sus filas de ADMINISTRATIVOS_VIAJES; al borrar un administrativo se eliminan sus asociaciones. Esta limpieza afecta a las asociaciones, no a los viajes gestionados.</li>
+              <li>Catálogos y viajes: impedir el borrado de marcas, modelos, categorías, departamentos, conductores o vehículos que sigan referenciados (RESTRICT en MySQL; integridad referencial sin borrado en cascada en Access). Así no se pierde el historial por eliminar una entrada de catálogo.</li>
+              <li>ISA: al eliminar un registro de VEHICULOS o EMPLEADOS, sus filas de subtipo pueden usar ON DELETE CASCADE, siempre respetando las referencias de viajes que bloqueen la eliminación. Las PK/FK por sí solas no garantizan totalidad y disyunción; se necesitan reglas adicionales y operaciones coordinadas.</li>
+              <li>Validar distancia_km &gt; 0, numero_tramo &gt; 0 y fecha_fin &gt;= fecha_inicio cuando ambas fechas estén informadas. Las reglas entre varias filas, como exigir tramos al completar un viaje, requieren lógica adicional en la operación o en la base de datos.</li>
+              <li>Proteger los catálogos mediante permisos de lectura y reservar las modificaciones a usuarios autorizados. En MySQL pueden añadirse triggers para reglas adicionales; no sustituyen las FK. En Access .accdb, los permisos por usuario deben resolverse en el servidor de datos si se necesita ese control; los formularios y permisos del archivo no equivalen a permisos por tabla.</li>
+            </ul>
+            <p class="mt-3 text-slate-600">Referencias: <a class="text-indigo-700 underline" href="https://support.microsoft.com/en-us/access/create-edit-or-delete-a-relationship">Relaciones en Access</a> y <a class="text-indigo-700 underline" href="https://dev.mysql.com/doc/refman/8.0/en/create-table-foreign-keys.html">claves foráneas en MySQL</a>.</p>
+          </div>
+</section>
+<section aria-labelledby="cambios-rita"><h3 id="cambios-rita" class="text-xl font-bold text-slate-950">Cambios justificados</h3>
+            <div class="mt-4 overflow-x-auto"><table class="w-full min-w-[44rem] text-left"><caption class="sr-only">Comparación entre la solución original y la revisión</caption><thead><tr><th scope="col" class="p-3">Elemento</th><th scope="col" class="p-3">Original</th><th scope="col" class="p-3">Revisión</th><th scope="col" class="p-3">Motivo</th></tr></thead><tbody><tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">Vehículos</th><td class="p-3 align-top">marca y modelo eran atributos de VEHICULOS, suficientes para los requisitos iniciales.</td><td class="p-3 align-top">Creamos MARCAS y MODELOS; MODELOS referencia MARCAS y VEHICULOS referencia MODELOS.</td><td class="p-3 align-top">Centralizar nombres, evitar variantes y permitir ampliar los catálogos. Cada modelo pertenece a una marca; UNIQUE (fk_marca, nombre) evita duplicados dentro de ella.</td></tr>
+<tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">ISA de vehículos</th><td class="p-3 align-top">CAMIONES y FURGONETAS compartían la PK matricula con VEHICULOS.</td><td class="p-3 align-top">Conservamos ambas tablas, sus PK/FK y la especialización total y disjunta.</td><td class="p-3 align-top">Era una decisión válida: cada vehículo sigue siendo exactamente un camión o una furgoneta.</td></tr>
+<tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">Empleados</th><td class="p-3 align-top">La formulación inicial agrupaba los apellidos; la solución original conservada ya incorpora apellido1 y apellido2.</td><td class="p-3 align-top">Mantenemos apellido1 y apellido2, junto con la ISA total y disjunta en CONDUCTORES y ADMINISTRATIVOS.</td><td class="p-3 align-top">Permitir tratar cada apellido por separado y conservar los datos comunes en EMPLEADOS.</td></tr>
+<tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">Conductores</th><td class="p-3 align-top">categoria era un atributo de CONDUCTORES.</td><td class="p-3 align-top">Creamos CATEGORIAS_CARNET y sustituimos categoria por fk_categoria.</td><td class="p-3 align-top">Evitar valores inconsistentes. Este diseño admite una categoría por conductor. Para varias se necesita una tabla intermedia CONDUCTORES_CATEGORIAS, con PK (dni_conductor, fk_categoria) y dos FK: relación N:M.</td></tr>
+<tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">Administrativos</th><td class="p-3 align-top">departamento era un atributo de ADMINISTRATIVOS.</td><td class="p-3 align-top">Creamos DEPARTAMENTOS y lo referenciamos mediante fk_departamento.</td><td class="p-3 align-top">Compartir un catálogo consistente de departamentos, con nombre y descripción.</td></tr>
+<tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">Viajes</th><td class="p-3 align-top">VIAJES tenía fecha_salida y las FK al conductor y al vehículo.</td><td class="p-3 align-top">Eliminamos fecha_salida únicamente en esta revisión y mantenemos ambas FK obligatorias. Renombramos num_viaje como numero_viaje en todas sus referencias.</td><td class="p-3 align-top">En este ejercicio las fechas se gestionan desde TRAMOS; cuando se necesite, el inicio del viaje puede consultarse con MIN(fecha_inicio). La fecha original era válida bajo los requisitos iniciales.</td></tr>
+<tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">Tramos</th><td class="p-3 align-top">TRAMOS era una entidad débil con PK (num_viaje, numero_orden) y borrado en cascada.</td><td class="p-3 align-top">Usamos (numero_viaje, numero_tramo), conservando distancia_km, fecha_inicio, fecha_fin y la dependencia del viaje.</td><td class="p-3 align-top">Los nuevos nombres aclaran su significado; se mantiene la identificación compuesta y ON DELETE CASCADE.</td></tr>
+<tr class="border-t border-slate-200"><th scope="row" class="p-3 align-top text-slate-950">Gestión de viajes</th><td class="p-3 align-top">ADMINISTRATIVOS_VIAJES resolvía correctamente la relación N:M.</td><td class="p-3 align-top">Conservamos la tabla y su PK (dni_administrativo, numero_viaje), actualizando el nombre de la referencia al viaje.</td><td class="p-3 align-top">Un administrativo puede gestionar varios viajes y un viaje varios administrativos; la PK impide asociaciones repetidas.</td></tr></tbody></table></div>
+          </section>
+<section aria-labelledby="consultas-rita"><h3 id="consultas-rita" class="text-xl font-bold text-slate-950">Consultas y vistas</h3>
+            <p class="mt-3">En Access se puede guardar una consulta de selección y reutilizarla en formularios e informes. En MySQL, CREATE VIEW guarda la definición de una consulta como una vista que se consulta con SELECT. Ambas permiten presentar datos de varias tablas sin duplicar los nombres en VIAJES.</p>
+            <p class="mt-3">Mediante JOIN recuperamos los nombres de conductor y administrativo desde EMPLEADOS y la marca y el modelo desde sus catálogos. La matrícula ya está en VIAJES como FK matricula_vehiculo; al unir VEHICULOS accedemos al resto de sus datos. Los nombres completos se calculan mediante concatenación.</p>
+            <h4 class="mt-4 font-bold text-slate-950">Ejemplo de vista MySQL</h4><pre class="schema-code mt-3 rounded-xl"><code>CREATE VIEW vista_viajes AS
+SELECT v.numero_viaje, v.origen, v.destino,
+       CONCAT_WS(' ', ec.nombre, ec.apellido1, ec.apellido2)
+         AS conductor,
+       ma.nombre AS marca, mo.nombre AS modelo,
+       ve.matricula,
+       av.dni_administrativo,
+       CONCAT_WS(' ', ea.nombre, ea.apellido1, ea.apellido2)
+         AS administrativo
+FROM VIAJES AS v
+JOIN CONDUCTORES AS c ON c.dni = v.dni_conductor
+JOIN EMPLEADOS AS ec ON ec.dni = c.dni
+JOIN VEHICULOS AS ve ON ve.matricula = v.matricula_vehiculo
+JOIN MODELOS AS mo ON mo.pk_modelo = ve.fk_modelo
+JOIN MARCAS AS ma ON ma.pk_marca = mo.fk_marca
+LEFT JOIN ADMINISTRATIVOS_VIAJES AS av
+  ON av.numero_viaje = v.numero_viaje
+LEFT JOIN ADMINISTRATIVOS AS a ON a.dni = av.dni_administrativo
+LEFT JOIN EMPLEADOS AS ea ON ea.dni = a.dni;</code></pre>
+            <p class="mt-3">La vista devuelve una fila por asociación entre viaje y administrativo; un viaje con varios administrativos aparece varias veces. LEFT JOIN conserva los viajes sin administrativos. CONCAT_WS omite los apellidos nulos.</p>
+            <h4 class="mt-4 font-bold text-slate-950">Equivalente en Access</h4><p class="mt-3">En el diseñador, añadir EMPLEADOS dos veces con alias ec y ea, crear las uniones equivalentes y conservar todos los viajes en las uniones hacia la gestión administrativa. Guardar como consulta, por ejemplo consulta_viajes. Para el nombre completo, usar un campo calculado como este (y sustituir ec por ea para el administrativo):</p>
+            <pre class="schema-code mt-3 rounded-xl"><code>conductor: Trim(Nz([ec].[nombre],"") &amp; " " &amp;
+  Nz([ec].[apellido1],"") &amp; " " &amp; Nz([ec].[apellido2],""))</code></pre>
+            <p class="mt-3">Las fechas pueden consultarse agrupando TRAMOS por numero_viaje: MIN(fecha_inicio) como inicio y MAX(fecha_fin) como fin. Si hay tramos sin finalizar, MAX solo considera las fechas informadas y no debe interpretarse como fin definitivo del viaje.</p>
+            <p class="mt-3 text-slate-600">Documentación: <a class="text-indigo-700 underline" href="https://support.microsoft.com/en-us/access/create-a-simple-select-query">consultas de selección de Access</a> y <a class="text-indigo-700 underline" href="https://dev.mysql.com/doc/refman/8.4/en/create-view.html">CREATE VIEW de MySQL</a>.</p>
+          </section>
+</div>
+  </details>
+</section>
+          <p class="rounded-xl bg-indigo-50 p-4">La revisión mantiene las decisiones originales válidas y añade estructura para gestionar catálogos y consultas. La eliminación de fecha_salida responde al criterio de esta corrección; la propuesta original se conserva completa para comparar ambas soluciones.</p>
+        </div>
+      </details>
+      </div>
     </main>
 
     <footer class="border-t border-slate-200 px-5 py-6 text-center text-xs text-slate-500">
       ER Lab · Cuaderno de bases de datos
     </footer>
+    <script>
+      document.getElementById('abrir-ambas-propuestas').addEventListener('click', () => {
+        document.getElementById('solucion-original').open = true;
+        document.getElementById('solucion-revisada').open = true;
+      });
+    </script>
   </body>
 </html>
